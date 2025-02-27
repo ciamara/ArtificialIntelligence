@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from lab1.data import get_data, inspect_data, split_data
+from data import get_data, inspect_data, split_data
 
 data = get_data()
 inspect_data(data)
@@ -24,40 +24,40 @@ x_test = test_data['Weight'].to_numpy()
 
 # TODO: calculate closed-form solution#####################################################
 
-# Calculate means
+theta_best = [0, 0]
+
+#means
 x_mean = np.mean(x_train)
 y_mean = np.mean(y_train)
 
-# Compute theta_1 (slope)
+# theta_1 (slope)
 theta_1 = np.sum((x_train - x_mean) * (y_train - y_mean)) / np.sum((x_train - x_mean) ** 2)
 
-# Compute theta_0 (intercept)
+# theta_0 (intercept)
 theta_0 = y_mean - theta_1 * x_mean
 
-# Store the best theta values
 theta_best = [theta_0, theta_1]
 
-print(f"Closed-form solution: theta_0 = {theta_0:.4f}, theta_1 = {theta_1:.4f}")
+print(f"θ (closed form): θ0 -> {theta_0:.4f}, θ1 -> {theta_1:.4f}")
 
 #########################################################################################
-theta_best = [0, 0]
 
 # TODO: calculate error#########################################################################
 
-# Function to compute Mean Squared Error
+# mean squared error
 def mean_squared_error(y_actual, y_predicted):
     return np.mean((y_actual - y_predicted) ** 2)
 
-# Compute predictions
+# predictions
 y_train_pred = theta_best[0] + theta_best[1] * x_train
 y_test_pred = theta_best[0] + theta_best[1] * x_test
 
-# Compute errors
+# errors
 mse_train = mean_squared_error(y_train, y_train_pred)
 mse_test = mean_squared_error(y_test, y_test_pred)
 
-print(f"Train MSE: {mse_train:.4f}")
-print(f"Test MSE: {mse_test:.4f}")
+print(f"train MSE: {mse_train:.4f}")
+print(f"test MSE: {mse_test:.4f}")
 
 ###############################################################################################
 
@@ -72,65 +72,62 @@ plt.show()
 
 # TODO: standardization###################################################################################
 
-# Standardize the features
 x_mean = np.mean(x_train)
 x_std = np.std(x_train)
 
 x_train_scaled = (x_train - x_mean) / x_std
-x_test_scaled = (x_test - x_mean) / x_std  # Use train mean & std for test data!
+x_test_scaled = (x_test - x_mean) / x_std
 
-# Print confirmation
-print(f"Standardized x_train: mean = {np.mean(x_train_scaled):.4f}, std = {np.std(x_train_scaled):.4f}")
-print(f"Standardized x_test: mean = {np.mean(x_test_scaled):.4f}, std = {np.std(x_test_scaled):.4f}")
+print(f"standarized x_train: mean = {np.mean(x_train_scaled):.4f}, std = {np.std(x_train_scaled):.4f}")
+print(f"standarized x_test: mean = {np.mean(x_test_scaled):.4f}, std = {np.std(x_test_scaled):.4f}")
 
 ############################################################################################################
 
 # TODO: calculate theta using Batch Gradient Descent#######################################################
 
-# Hyperparameters
-learning_rate = 0.1  # Step size
-n_iterations = 1000  # Number of iterations
-m = len(x_train_scaled)  # Number of training samples
+#parameters
+learning_rate = 0.1  # step size
+n_iterations = 1000  # iterations
+m = len(x_train_scaled)  # training samples
 
-# Initialize theta parameters
-theta_0, theta_1 = 0, 0  # Start with zero
+# theta parameters
+theta_0, theta_1 = 0, 0
 
-# Perform gradient descent
+# gradient descent
 for iteration in range(n_iterations):
     # Compute predictions
     y_pred = theta_0 + theta_1 * x_train_scaled
 
-    # Compute gradients
+    # gradients
     d_theta_0 = (1 / m) * np.sum(y_pred - y_train)
     d_theta_1 = (1 / m) * np.sum((y_pred - y_train) * x_train_scaled)
 
-    # Update theta parameters
+    # update theta
     theta_0 -= learning_rate * d_theta_0
     theta_1 -= learning_rate * d_theta_1
 
-# Store optimized theta values
 theta_best = [theta_0, theta_1]
 
-print(f"Gradient Descent Solution: theta_0 = {theta_0:.4f}, theta_1 = {theta_1:.4f}")
+print(f"gradient descent solution: θ0 = {theta_0:.4f}, θ1 = {theta_1:.4f}")
 
 ###############################################################################################################
 
 # TODO: calculate error#########################################################
 
-# Function to compute MSE
+# MSE
 def mean_squared_error(y_actual, y_predicted):
     return np.mean((y_actual - y_predicted) ** 2)
 
-# Compute predictions using trained θ values
+# predictions using trained θ values
 y_train_pred = theta_best[0] + theta_best[1] * x_train_scaled
 y_test_pred = theta_best[0] + theta_best[1] * x_test_scaled
 
-# Compute MSE for training and test sets
+# MSE for training and test sets
 mse_train = mean_squared_error(y_train, y_train_pred)
 mse_test = mean_squared_error(y_test, y_test_pred)
 
-print(f"Train MSE after Gradient Descent: {mse_train:.4f}")
-print(f"Test MSE after Gradient Descent: {mse_test:.4f}")
+print(f"train MSE after gradient descent: {mse_train:.4f}")
+print(f"test MSE after gradient descent: {mse_test:.4f}")
 
 #############################################################################
 
