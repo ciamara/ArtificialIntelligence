@@ -37,7 +37,7 @@ def roulette_selection(items, knapsack_max_capacity, population, n_selection):
     total_fitness = sum(fitness_values)
 
     if total_fitness == 0:
-        return random.choices(population, k=n_selection)  # if all fitnesses =0, choose randomly
+        return random.choices(population, k=n_selection)  # if all fitnesses = 0, choose randomly
 
     selection_probabilities = [f / total_fitness for f in fitness_values]  # probabilities
     selected = np.random.choice(len(population), size=n_selection, replace=True, p=selection_probabilities)# choosing based on probabilities
@@ -84,7 +84,7 @@ print(items)
 population_size = 100
 generations = 200
 n_selection = 20
-n_elite = 1
+n_elite = 3
 
 start_time = time.time()
 best_solution = None
@@ -98,6 +98,10 @@ for _ in range(generations):
 
     # TODO: implement genetic algorithm-----------------------------------------------------------
 
+    # selecting elite individuals
+    sorted_population = sorted(population, key=lambda ind: fitness(items, knapsack_max_capacity, ind), reverse=True)
+    elites = sorted_population[:n_elite]
+
     # roulette selection of parents
     population = roulette_selection(items, knapsack_max_capacity, population, n_selection)
 
@@ -106,6 +110,13 @@ for _ in range(generations):
 
     # mutation(bit flip)
     population = mutate_population(population)
+
+    # elites
+    population.extend(elites)
+
+    # restoring population to 100
+    random_individuals = random.sample(sorted_population, 80 - n_elite)
+    population.extend(random_individuals)
 
     #----------------------------------------------------------------------------------------------
 
