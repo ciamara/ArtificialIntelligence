@@ -69,8 +69,8 @@ def crossover(population):
 
 # one bit flip per individual
 def mutate(individual):
-    mutation_point = random.randint(0, len(individual) - 1)  # Losowy indeks
-    individual[mutation_point] = not individual[mutation_point]  # Negacja wartości
+    mutation_point = random.randint(0, len(individual) - 1)  # random point
+    individual[mutation_point] = not individual[mutation_point]
     return individual
 
 # mutating population using bit flip(one flip per individual)
@@ -82,9 +82,9 @@ items, knapsack_max_capacity = get_big()
 print(items)
 
 population_size = 100
-generations = 200
+generations = 1000
 n_selection = 20
-n_elite = 3
+n_elite = 1
 
 start_time = time.time()
 best_solution = None
